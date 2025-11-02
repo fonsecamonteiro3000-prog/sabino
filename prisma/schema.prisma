@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Users table - stores user information and points
+model User {
+  id              String            @id @default(uuid())
+  email           String            @unique
+  cpf             String            @unique
+  fullName        String            @map("full_name")
+  totalPoints     Int               @default(0) @map("total_points")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  recyclingRecords RecyclingRecord[]
+
+  @@map("users")
+}
+
+// Materials table - recyclable materials with point values
+model Material {
+  id              String            @id @default(uuid())
+  name            String            @unique
+  pointsPerUnit   Int               @map("points_per_unit")
+  category        String
+  description     String?
+  icon            String
+  createdAt       DateTime          @default(now()) @map("created_at")
+  recyclingRecords RecyclingRecord[]
+
+  @@map("materials")
+}
+
+// Recycling records - tracks user recycling activities
+model RecyclingRecord {
+  id            String   @id @default(uuid())
+  userId        String   @map("user_id")
+  materialId    String   @map("material_id")
+  materialName  String   @map("material_name")
+  quantity      Float
+  pointsEarned  Int      @map("points_earned")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@map("recycling_records")
+}

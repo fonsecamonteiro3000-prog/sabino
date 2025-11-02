@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste EcoPoints - Sistema Completo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 30px; font-size: 2.5em; }
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .test-section h2 { margin-bottom: 15px; font-size: 1.5em; }
+        .status { 
+            padding: 10px; 
+            border-radius: 8px; 
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success { background: rgba(52, 211, 153, 0.3); border: 2px solid #34d399; }
+        .error { background: rgba(239, 68, 68, 0.3); border: 2px solid #ef4444; }
+        .warning { background: rgba(251, 191, 36, 0.3); border: 2px solid #fbbf24; }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: scale(1.05); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+            margin: 8px 0;
+        }
+        input::placeholder { color: rgba(255, 255, 255, 0.6); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌱 Teste EcoPoints - Diagnóstico Completo</h1>
+        
+        <!-- Teste 1: Conexão -->
+        <div class="test-section">
+            <h2>1️⃣ Teste de Conexão</h2>
+            <button onclick="testConnection()">Testar Conexão com Supabase</button>
+            <div id="connection-result"></div>
+        </div>
+
+        <!-- Teste 2: Materiais -->
+        <div class="test-section">
+            <h2>2️⃣ Carregar Materiais</h2>
+            <button onclick="loadMaterials()">Buscar Materiais</button>
+            <div id="materials-result"></div>
+        </div>
+
+        <!-- Teste 3: Cadastro -->
+        <div class="test-section">
+            <h2>3️⃣ Testar Cadastro</h2>
+            <input type="text" id="signup-name" placeholder="Nome Completo" value="Teste Usuario">
+            <input type="email" id="signup-email" placeholder="Email" value="teste@gmail.com">
+            <input type="text" id="signup-cpf" placeholder="CPF" value="123.456.789-00">
+            <input type="password" id="signup-password" placeholder="Senha" value="123456">
+            <button onclick="testSignup()">Criar Conta</button>
+            <div id="signup-result"></div>
+        </div>
+
+        <!-- Teste 4: Login -->
+        <div class="test-section">
+            <h2>4️⃣ Testar Login</h2>
+            <input type="email" id="login-email" placeholder="Email" value="teste@gmail.com">
+            <input type="password" id="login-password" placeholder="Senha" value="123456">
+            <button onclick="testLogin()">Fazer Login</button>
+            <div id="login-result"></div>
+        </div>
+
+        <!-- Teste 5: Session -->
+        <div class="test-section">
+            <h2>5️⃣ Verificar Sessão</h2>
+            <button onclick="checkSession()">Verificar Usuário Logado</button>
+            <div id="session-result"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabase = window.supabase.createClient(
+            'https://cjwyplgstyzracxlclfc.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqd3lwbGdzdHl6cmFjeGxjbGZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMDc4NjcsImV4cCI6MjA3NzY4Mzg2N30._J8eqjJqZpLQi5FyKwRAXTMqiy8EwpUjLFGbycs81yA'
+        );
+
+        async function testConnection() {
+            const result = document.getElementById('connection-result');
+            result.innerHTML = '<div class="status warning">⏳ Testando...</div>';
+            
+            try {
+                const { data, error } = await supabase.from('materials').select('count');
+                if (error) throw error;
+                result.innerHTML = '<div class="status success">✅ Conexão OK com Supabase!</div>';
+            } catch (err) {
+                result.innerHTML = `<div class="status error">❌ Erro: ${err.message}</div>`;
+            }
+        }
+
+        async function loadMaterials() {
+            const result = document.getElementById('materials-result');
+            result.innerHTML = '<div class="status warning">⏳ Carregando...</div>';
+            
+            try {
+                const { data, error } = await supabase
+                    .from('materials')
+                    .select('*')
+                    .eq('is_active', true);
+                
+                if (error) throw error;
+                
+                result.innerHTML = `
+                    <div class="status success">✅ ${data.length} materiais encontrados!</div>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (err) {
+                result.innerHTML = `<div class="status error">❌ Erro: ${err.message}</div>`;
+            }
+        }
+
+        async function testSignup() {
+            const result = document.getElementById('signup-result');
+            result.innerHTML = '<div class="status warning">⏳ Criando conta...</div>';
+            
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const cpf = document.getElementById('signup-cpf').value;
+            const password = document.getElementById('signup-password').value;
+            
+            try {
+                // 1. Criar auth
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: { name: name, cpf: cpf }
+                    }
+                });
+                
+                if (authError) throw authError;
+                
+                console.log('Auth criado:', authData);
+                
+                // 2. Criar na tabela users
+                const { error: insertError } = await supabase
+                    .from('users')
+                    .insert({
+                        id: authData.user.id,
+                        email: email,
+                        full_name: name,
+                        cpf: cpf,
+                        total_points: 0
+                    });
+                
+                if (insertError && !insertError.message.includes('duplicate')) {
+                    console.error('Erro ao inserir:', insertError);
+                }
+                
+                result.innerHTML = `
+                    <div class="status success">✅ Conta criada com sucesso!</div>
+                    <pre>User ID: ${authData.user.id}\nEmail: ${email}</pre>
+                `;
+            } catch (err) {
+                result.innerHTML = `<div class="status error">❌ Erro: ${err.message}</div>`;
+                console.error('Erro completo:', err);
+            }
+        }
+
+        async function testLogin() {
+            const result = document.getElementById('login-result');
+            result.innerHTML = '<div class="status warning">⏳ Fazendo login...</div>';
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) throw error;
+                
+                // Buscar dados do usuário
+                const { data: userData } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('id', data.user.id)
+                    .single();
+                
+                result.innerHTML = `
+                    <div class="status success">✅ Login bem-sucedido!</div>
+                    <pre>${JSON.stringify(userData, null, 2)}</pre>
+                `;
+            } catch (err) {
+                result.innerHTML = `<div class="status error">❌ Erro: ${err.message}</div>`;
+            }
+        }
+
+        async function checkSession() {
+            const result = document.getElementById('session-result');
+            result.innerHTML = '<div class="status warning">⏳ Verificando...</div>';
+            
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                
+                if (!session) {
+                    result.innerHTML = '<div class="status warning">⚠️ Nenhum usuário logado</div>';
+                    return;
+                }
+                
+                const { data: userData } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single();
+                
+                result.innerHTML = `
+                    <div class="status success">✅ Usuário logado!</div>
+                    <pre>${JSON.stringify(userData, null, 2)}</pre>
+                    <button onclick="supabase.auth.signOut().then(() => location.reload())">Sair</button>
+                `;
+            } catch (err) {
+                result.innerHTML = `<div class="status error">❌ Erro: ${err.message}</div>`;
+            }
+        }
+
+        // Auto-teste ao carregar
+        window.onload = () => {
+            testConnection();
+            loadMaterials();
+        };
+    </script>
+</body>
+</html>
