@@ -270,6 +270,25 @@ export const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-6 mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400 text-sm">
+              © 2025 SENAI EcoPoints. Todos os direitos reservados.
+            </p>
+            <div className="flex flex-col items-center md:items-end mt-4 md:mt-0">
+              <p className="text-gray-400 text-sm">
+                Desenvolvido com 💚 para um mundo mais sustentável
+              </p>
+              <p className="text-gray-600 text-xs mt-1">
+                created by: @danielmontsz
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
