@@ -143,9 +143,14 @@ export const Footer: React.FC = () => {
           <p className="text-gray-400 text-sm">
             © 2024 SENAI EcoPoints. Todos os direitos reservados.
           </p>
-          <p className="text-gray-400 text-sm mt-4 md:mt-0">
-            Desenvolvido com 💚 para um mundo mais sustentável
-          </p>
+          <div className="flex flex-col items-center md:items-end mt-4 md:mt-0">
+            <p className="text-gray-400 text-sm">
+              Desenvolvido com 💚 para um mundo mais sustentável
+            </p>
+            <p className="text-gray-600 text-xs mt-1">
+              created by: @danielmontsz
+            </p>
+          </div>
         </div>
       </div>
     </footer>
